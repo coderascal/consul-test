@@ -1,0 +1,8 @@
+{
+  "service": {
+    "name": "bfs-drqs-injest",
+    "id":   "bfs-drqs-injest-1", 
+    "tags": ["tenant-drqs", "cloud-drqs", "node-n3"], 
+    "port": 20003
+  }
+}

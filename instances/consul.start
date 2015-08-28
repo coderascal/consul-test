@@ -1,0 +1,33 @@
+#!/bin/bash
+
+HOSTNAME=`hostname`
+IP=`/sbin/ifconfig eth1 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}'`
+
+echo "Starting consul on $HOSTNAME ($IP)..."
+
+# Manage directories
+if [ -d "/tmp/consul" ];
+then
+  rm -rf /tmp/consul
+fi
+mkdir -p /tmp/consul
+cp -r /vagrant/instances/$HOSTNAME/* /tmp/consul/
+
+JOIN=
+if [ "172.20.20.11" == "$IP" ];
+then
+  JOIN="172.20.20.12"
+else
+  JOIN="172.20.20.11"
+fi
+
+BOOTSTRAP=
+if [ "bootstrap" == "$1" ]; 
+then
+  BOOTSTRAP="-bootstrap-expect $2"
+  echo "Bootstrap mode on"
+else
+  echo "Bootstrap mode off"
+fi
+
+consul agent -server $BOOTSTRAP -node="$HOSTNAME" -bind=$IP -client=0.0.0.0 -retry-join=$JOIN -data-dir /tmp/consul/data -config-dir /tmp/consul/consul.d
