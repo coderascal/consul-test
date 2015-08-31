@@ -20,11 +20,11 @@
 
   <dependencies>
 
-    <dependency>
-      <groupId>uk.org.simonsite</groupId>
-      <artifactId>log4j-rolling-appender</artifactId>
-      <version>20131024-2017</version>
-    </dependency>
+	<dependency>
+	    <groupId>org.jboss.resteasy</groupId>
+	    <artifactId>resteasy-client</artifactId>
+	    <version>3.0.2.Final</version>
+	</dependency>
 
     <dependency>
       <groupId>junit</groupId>
@@ -35,7 +35,7 @@
     <dependency>
         <groupId>com.orbitz.consul</groupId>
         <artifactId>consul-client</artifactId>
-        <version>0.9.8</version>
+        <version>0.9.9</version>
     </dependency>
     <!-- include your preferred javax.ws.rs-api implementation -->
 

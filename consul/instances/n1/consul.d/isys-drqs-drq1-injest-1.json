@@ -1,0 +1,8 @@
+{
+  "service": {
+    "name": "isys-drqs-drq1-injest",
+    "id":   "isys-drqs-drq1-injest-1", 
+    "tags": ["tenant-isys", "cloud-drqs", "collection-drq1", "type-injest", "instance-1"], 
+    "port": 20001
+  }
+}

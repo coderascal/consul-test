@@ -1,8 +1,0 @@
-{
-  "service": {
-    "name": "bfs-drqs-query",
-    "id":   "bfs-drqs-query-1", 
-    "tags": ["tenant-drqs", "cloud-drqs", "node-n1"], 
-    "port": 10001
-  }
-}

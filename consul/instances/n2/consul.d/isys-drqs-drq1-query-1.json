@@ -1,0 +1,8 @@
+{
+  "service": {
+    "name": "isys-drqs-drq1-query",
+    "id":   "isys-drqs-drq1-query-1", 
+    "tags": ["tenant-isys", "cloud-drqs", "collection-drq1", "type-query", "instance-1"], 
+    "port": 10001
+  }
+}
