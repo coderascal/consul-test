@@ -7,6 +7,13 @@ public class EndpointIdentifier {
   private String collection;
   private String endpointType;
 
+  public EndpointIdentifier(String tenant, String cloud, String collection, String endpointType){
+    setTenant(tenant);
+    setCloud(cloud);
+    setCollection(collection);
+    setEndpointType(endpointType);
+  }
+
   public String getTenant() {
     return tenant;
   }
@@ -61,6 +68,9 @@ public class EndpointIdentifier {
     return toString().hashCode();
   }
 
+  /* (non-Javadoc)
+   * @see com.bloomberg.bfs.radar.EndpointIdentifier#equals(java.lang.Object)
+   */
   @Override
   public boolean equals(Object obj){
     if(obj instanceof EndpointIdentifier){

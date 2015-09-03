@@ -4,11 +4,13 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.bloomberg.core.BBLogger;
 import com.google.common.collect.Lists;
 import com.google.common.net.HostAndPort;
 
 public class RadarCacheTest{
 
+  private BBLogger log = BBLogger.getLogger(getClass());
   private RadarSettings radarSettings;
 
   @Before
@@ -26,7 +28,7 @@ public class RadarCacheTest{
   @Test
   public void getExistingServiceTest() throws InterruptedException{
     RadarCache radar = new RadarCache().withRadarSettings(radarSettings);
-    HostAndPort first = radar.getQueryEndpoint("tenant", "cloud", "collection");
+    HostAndPort first = radar.getQueryEndpoint("isys", "drqs", "drq1");
 
     HostAndPort second = radar.getQueryEndpoint("isys", "drqs", "drq1");
 
@@ -35,6 +37,11 @@ public class RadarCacheTest{
     Assert.assertNotEquals(first.toString(), second.toString());
 
     while(true){
+      HostAndPort endpoint = radar.getQueryEndpoint("isys", "drqs", "drq1");
+      Assert.assertNotNull(first);
+
+      log.info(String.format("I got endpoint %s:%s, ", endpoint.getHostText(), endpoint.getPort()));
+
       //      BBLogger.getLogger(getClass()).info("I am looping");
       Thread.sleep(5000);
     }

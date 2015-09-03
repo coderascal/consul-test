@@ -24,9 +24,11 @@ public class RadarCache {
   }
 
   public HostAndPort getQueryEndpoint(String tenant, String cloud, String collection) {
-    EndpointIdentifier endpointIdentifier = new EndpointIdentifier().withTenant(tenant).withCloud(cloud).withCollection(collection).withEndpointType("query");
+    EndpointIdentifier endpointIdentifier = new EndpointIdentifier(tenant, cloud, collection, "query");
 
     if(!endpointCaches.containsKey(endpointIdentifier)){
+      log.info("Creating new EndpointCache for %s", endpointIdentifier);
+
       EndpointCache cache = new EndpointCache(endpointIdentifier, radarSettings);
       cache.start();
       endpointCaches.put(endpointIdentifier, cache);

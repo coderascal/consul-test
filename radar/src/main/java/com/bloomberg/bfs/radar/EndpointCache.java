@@ -24,35 +24,32 @@ public class EndpointCache implements Closeable {
 
   private LinkedList<HostAndPort> endpoints;
 
-  public EndpointCache(EndpointIdentifier endpointIdentifier, RadarSettings radarSettings){
+  public EndpointCache(final EndpointIdentifier endpointIdentifier, RadarSettings radarSettings){
     this.endpointIdentifier = endpointIdentifier;
     this.radarSettings = radarSettings;
 
     updateListener = new Listener<HostAndPort, ServiceHealth>() {
       public void notify(Map<HostAndPort, ServiceHealth> newValues) {
-	StringBuilder builder = new StringBuilder();
-
-	builder.append("I have been notified of: ");
+	StringBuilder messageBuilder = new StringBuilder();
 
 	LinkedList<HostAndPort> endpoints = new LinkedList<HostAndPort>();
 	for(HostAndPort endpoint : newValues.keySet()){
 	  endpoints.add(endpoint);
-
-	  builder.append(String.format("%s:%s, ", endpoint.getHostText(), endpoint.getPort()));
+	  messageBuilder.append(String.format("%s:%s, ", endpoint.getHostText(), endpoint.getPort()));
 	}
 
-	log.info(builder.toString());
+	log.info(String.format("Received updates for %s - new endpoints are %s", endpointIdentifier, messageBuilder.toString()));
 	setEndpoints(endpoints);
       }
     };
   }
 
   public void start() {
-    log.info("Loading endpoint cache for %s", endpointIdentifier);
+    log.debug("Starting endpoint cache for %s", endpointIdentifier);
 
     for(HostAndPort discoveryEndpoint : radarSettings.getDiscoveryEndpoints()){
       try{
-	log.trace("Getting endpoints for %s from discovery endpoint %s", endpointIdentifier, discoveryEndpoint);
+	log.debug("Getting endpoints for %s from discovery endpoint %s", endpointIdentifier, discoveryEndpoint);
 
 	// Get current state
 	HealthClient healthClient = Consul.newClient(discoveryEndpoint.getHostText(), discoveryEndpoint.getPort()).healthClient();
@@ -66,6 +63,8 @@ public class EndpointCache implements Closeable {
 	cache = ServiceHealthCache.newCache(healthClient, endpointIdentifier.toString());
 	cache.addListener(updateListener);
 	cache.start();
+
+	log.info("Loaded endpoint cache for %s from discovery at %s", endpointIdentifier, discoveryEndpoint);
 
 	// exit early as we already found all we'll find from any of the discovery endpoints
 	return;
