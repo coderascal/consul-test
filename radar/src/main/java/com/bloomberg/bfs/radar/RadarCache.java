@@ -10,6 +10,8 @@ public class RadarCache {
   private BBLogger log = BBLogger.getLogger(getClass());
 
   private RadarSettings radarSettings;
+  private EndpointCacheFactory endpointCacheFactory;
+
   private Map<EndpointIdentifier, EndpointCache> endpointCaches = new HashMap<EndpointIdentifier, EndpointCache>();
 
   public RadarSettings getRadarSettings(){
@@ -18,20 +20,31 @@ public class RadarCache {
   public void setRadarSettings(RadarSettings radarSettings){
     this.radarSettings = radarSettings;
   }
-  public RadarCache withRadarSettings(RadarSettings radarSettings){
-    setRadarSettings(radarSettings);
-    return this;
+
+  public EndpointCacheFactory getEndpointCacheFactory(){
+    return endpointCacheFactory;
+  }
+  public void setEndpointCacheFactory(EndpointCacheFactory endpointCacheFactory){
+    this.endpointCacheFactory = endpointCacheFactory;
   }
 
   public HostAndPort getQueryEndpoint(String tenant, String cloud, String collection) {
-    EndpointIdentifier endpointIdentifier = new EndpointIdentifier(tenant, cloud, collection, "query");
+    return getEndpoint(tenant, cloud, collection, "query");
+  }
+  public HostAndPort getInjestEndpoint(String tenant, String cloud, String collection) {
+    return getEndpoint(tenant, cloud, collection, "injest");
+  }
+  public HostAndPort getAdminEndpoint(String tenant, String cloud, String collection) {
+    return getEndpoint(tenant, cloud, collection, "admin");
+  }
+
+  private HostAndPort getEndpoint(String tenant, String cloud, String collection, String endpointType){
+    EndpointIdentifier endpointIdentifier = new EndpointIdentifier(tenant, cloud, collection, endpointType);
 
     if(!endpointCaches.containsKey(endpointIdentifier)){
       log.info("Creating new EndpointCache for %s", endpointIdentifier);
 
-      EndpointCache cache = new EndpointCache(endpointIdentifier, radarSettings);
-      cache.start();
-      endpointCaches.put(endpointIdentifier, cache);
+      endpointCaches.put(endpointIdentifier, endpointCacheFactory.createEndpointCache(radarSettings, endpointIdentifier));
     }
 
     return endpointCaches.get(endpointIdentifier).getEndpoint();
